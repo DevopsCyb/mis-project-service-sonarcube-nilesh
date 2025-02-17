@@ -1,0 +1,22 @@
+name: Build and deploy to on-prem k8s
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
+      - name: Get K8s context
+        uses: azure/k8s-set-context@v3
+        with:
+          method: service-account
+          k8s-url: 'https://172.16.0.4:6443'
+          k8s-secret: ${{ secrets.SA_TOKEN }}
+
+      - name: Deploy namespace
+        run: |
+          kubectl get ns
+          kubectl run nginx --image=nginx
+

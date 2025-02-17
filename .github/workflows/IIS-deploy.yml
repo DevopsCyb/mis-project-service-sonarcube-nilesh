@@ -1,0 +1,92 @@
+name: Deploy on IIS server
+
+on:
+  workflow_dispatch: 
+    inputs:
+      Server:
+        description: 'Server Name ' 
+        required: true
+        default: "SHUBHAMJAD-VD3"
+      DatabaseName:
+        description: 'Database Name ' 
+        required: true
+        default: "projectdb"        
+      UserId:
+        description: 'Database User Id ' 
+        required: true
+        default: "shubhamjad"
+      
+        
+jobs:
+  build:
+    runs-on: self-hosted     
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+#     - name: Check .NET version
+#       run: dotnet --version
+#       id: check-dotnet-version
+
+#     - name: Setup .NET
+#       uses: actions/setup-dotnet@v2
+#       with:
+#         dotnet-version: 7.0.102
+#       if: steps.check-dotnet-version.outputs.stdout != '7.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore MIS.Services.Project.Api/MIS.Services.Project.Api.csproj
+      
+    - name: Replace tokens
+      uses: cschleiden/replace-tokens@v1.2
+      with:
+          tokenPrefix: '#{'
+          tokenSuffix: '}#'
+          files: '["**/*.json"]'
+      env:
+         sql: "Data Source=${{github.event.inputs.Server}};Initial Catalog=${{github.event.inputs.DatabaseName}};Persist Security Info=False;User ID=${{github.event.inputs.UserId}};Password=${{secrets.DB_PASSWORD}};MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;"
+         sb: ${{ secrets.SB_CS }}
+
+    - name: Build
+      run: dotnet build MIS.Services.Project.Api/MIS.Services.Project.Api.csproj
+
+    - name: Publish
+      run: dotnet publish MIS.Services.Project.Api/MIS.Services.Project.Api.csproj --output ./publish
+    
+    - name: Deploy
+      shell: pwsh
+      run: |
+          # Check if running as administrator
+           if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+            # Restart as administrator
+            Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -Command `"& '${{ github.workspace }}/deploy.ps1'`"" -Verb RunAs
+            Exit
+           }
+          # Variables for deployment
+          $websiteName = "mis-pjt-svc1"
+          $webAppPath = "C:\inetpub\wwwroot\mis-pjt-svc1\"
+          $sourcePath = "${{ github.workspace }}\publish"
+          # Stop the mis-pjt-svc website, if it exists
+          Import-Module WebAdministration
+          if (Get-Website $websiteName) {
+            Stop-Website $websiteName
+          }
+          # Delete the mis-pjt-svc website, if it exists
+          if (Get-WebSite $websiteName) {
+            Remove-Website $websiteName 
+          }
+          # Create a new website
+          New-Website -Name $websiteName -PhysicalPath $webAppPath -Port 8082 -Force
+          # Copy the new files to the website directory
+          Copy-Item $sourcePath\* $webAppPath -Recurse -Force
+          # Start the website
+          Start-Website $websiteName
+
+
+
+
+
+
+

@@ -1,0 +1,36 @@
+name: Build and push an image to ACR
+
+on:
+  workflow_dispatch:
+    inputs:
+      resource_group:
+        required: true
+        description: "AKS resource group"
+        default: "rg-mis-aks"
+
+env:
+  AZURE_CONTAINER_REGISTRY: ${{ vars.ACR_REGISTRY_NAME }}
+  CONTAINER_NAME: "mis.services.pjt"
+  RESOURCE_GROUP: ${{ github.events.inputs.resource_group }}
+
+jobs:
+  ACR:
+    runs-on: ubuntu-latest
+    steps:
+      # Checks out the repository this file is in
+      - uses: actions/checkout@v3
+      
+      - name: ACR login
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - run: |
+          docker build -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:$(date +'%Y.%m.%d') .
+          docker build -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:latest .
+          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:$(date +'%Y.%m.%d')
+          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:latest 
+
+     
+  

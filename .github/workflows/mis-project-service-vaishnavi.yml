@@ -1,0 +1,18 @@
+
+name: Deploy project service
+
+on: 
+  workflow_dispatch: 
+
+jobs: 
+  builds-and-deploy:
+    uses: cybagedevops/mis-reusable/.github/workflows/Service-reusable-template-vaishnavi.yml@main
+    with:
+      app-name: 'mis-project-service-vaishnavi'
+      resource-group: 'rg-mis-vaishnavi'
+      keyVaultName: 'mis-keyvault-vaishn-qa'
+      resourceGroupNameKeyVault: 'rg-mis-persistent'
+      ProjectPath: 'Mis.Services.Project.Api/Mis.Services.Project.Api.csproj'
+      appSettings: 'vaishnaviQA'
+      buildProject: 'true'
+    secrets: inherit  

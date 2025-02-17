@@ -1,0 +1,32 @@
+name: sonar scan of dotnet project
+on:
+  workflow_dispatch:
+    
+    
+jobs:
+  SonarScan:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+#       - name: set execution restartPolicy
+#         shell: cmd
+#         run: powershell.exe -Command "Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser"
+
+      - name: Restore dependencies
+        run: dotnet restore Mis.Services.Project.Tests/Mis.Services.Project.Tests.csproj
+
+#       - name: Install Sonar Scanner
+#         if: success() || failure()
+#         run: |
+#           dotnet tool install --global dotnet-sonarscanner
+#           dotnet tool install --global dotnet-coverage
+
+      - name: scan dotnet project
+        shell: cmd
+        run: |
+          dotnet sonarscanner begin /k:"${{ vars.SONAR_PROJECTKEY }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml"
+          dotnet build MIS.Services.Project.Tests/MIS.Services.Project.Tests.csproj --no-incremental
+          dotnet-coverage collect dotnet test -f xml -o coverage.xml
+          dotnet sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}

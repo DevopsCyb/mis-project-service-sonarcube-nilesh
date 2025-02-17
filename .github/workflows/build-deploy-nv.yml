@@ -1,0 +1,22 @@
+name: project-service-ci-cd
+on:
+  workflow_dispatch:
+
+jobs:
+    Deploy:
+        runs-on: windows-latest
+        steps:
+
+            - name: Git Checkout
+              uses: actions/checkout@v3
+
+            - name: Setup .NET Core
+              uses: actions/setup-dotnet@v3
+              with:
+                dotnet-version: 7.0.x
+            
+            - name: Install dependnecies
+              run: dotnet restore Mis.Services.Project.Api/Mis.Services.Project.Api.csproj
+
+            - name: Build
+              run: dotnet build Mis.Services.Project.Api/Mis.Services.Project.Api.csproj --configuration Release

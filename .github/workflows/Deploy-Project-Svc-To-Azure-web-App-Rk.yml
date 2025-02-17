@@ -1,0 +1,14 @@
+name: Deploy .Net App to Azure Web App Ravi
+
+on: 
+  workflow_dispatch: 
+
+jobs: 
+  builds-and-deploy:
+    uses: cybagedevops/mis-reusable/.github/workflows/MIS-Services-Deployments-Template-Rk.yml@main
+    with:
+      app-name: 'mis-project-service-ravi-prod'
+      appSettings: 'raviQA'
+      buildProject: 'true'
+      isProdDeployment: true
+    secrets: inherit

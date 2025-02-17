@@ -1,0 +1,20 @@
+name: project-service-cd-yash
+on:
+  workflow_run:
+    workflows: ["project-service-ci-yash"]
+    types:
+      - completed
+
+jobs:
+    Deploy:
+     
+      uses: cybagedevops/mis-reusable/.github/workflows/mis-service-reusable-template-cd-yash.yaml@main
+      with:
+          artifact-name: 'project-service'
+          app-name: 'mis-project-svc-yash-prod'
+          appSettings: 'yashProd'
+          keyVaultName: 'mis-keyvault-yashdu'
+          resourceGroupNameKeyVault: 'rg-mis-persistent'
+          repository-name: 'cybagedevops/mis-project-service'
+          resource-group: 'rg-mis-yash-prod'
+      secrets: inherit

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MIS.Services.Project.Api", "MIS.Services.Project.Api\MIS.Services.Project.Api.csproj", "{C6DCE640-AB25-473D-9455-44FBA32E9FFA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MIS.Services.Project.Tests", "MIS.Services.Project.Tests\MIS.Services.Project.Tests.csproj", "{37675DDA-DA20-4CCD-BDD4-2D7AA6C6AA71}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C6DCE640-AB25-473D-9455-44FBA32E9FFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6DCE640-AB25-473D-9455-44FBA32E9FFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6DCE640-AB25-473D-9455-44FBA32E9FFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6DCE640-AB25-473D-9455-44FBA32E9FFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37675DDA-DA20-4CCD-BDD4-2D7AA6C6AA71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37675DDA-DA20-4CCD-BDD4-2D7AA6C6AA71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37675DDA-DA20-4CCD-BDD4-2D7AA6C6AA71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37675DDA-DA20-4CCD-BDD4-2D7AA6C6AA71}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {85CF42FC-2AF8-4325-AC5B-909705EC46B1}
+	EndGlobalSection
+EndGlobal

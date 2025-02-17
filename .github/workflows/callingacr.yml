@@ -1,0 +1,12 @@
+name: Calling ACR workflow
+on:
+    repository_dispatch:
+        types: [deploy-to-acr]
+    workflow_dispatch:
+
+jobs:
+    acr:
+        uses: cybagedevops/mis-reusable/.github/workflows/acr.yaml@main
+        secrets: inherit
+        with:
+            IMAGE_NAME: mis.services.pjt

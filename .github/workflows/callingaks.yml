@@ -1,0 +1,15 @@
+name: Calling AKS workflow
+on:
+    workflow_run:
+        workflows: [Calling ACR workflow]
+        types:
+          - completed
+    workflow_dispatch:
+
+jobs:
+    acr:
+        uses: cybagedevops/mis-reusable/.github/workflows/aks.yml@main
+        secrets: inherit
+        with:
+            IMAGE_NAME: mis.services.pjt
+            DB_NAME: Project

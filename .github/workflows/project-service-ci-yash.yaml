@@ -1,0 +1,12 @@
+name: project-service-ci-yash
+on:
+  workflow_dispatch:
+
+jobs:
+    Build:
+        uses: cybagedevops/mis-reusable/.github/workflows/mis-services-reusable-template-ci-yash.yaml@main
+        with:
+          artifact-name: 'project-service'
+          path-name: 'Mis.Services.Project.Api/Mis.Services.Project.Api.csproj'
+          
+        secrets: inherit

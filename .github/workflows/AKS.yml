@@ -1,0 +1,73 @@
+name: Build and deploy an app to AKS
+
+on:
+  #push:
+  workflow_dispatch:
+    inputs:
+      namespace:
+        required: true
+        description: 'AKS namespace'
+        type: choice
+        options:
+          - "ns-mis-aspnet-dev"
+          - "ns-mis-aspnet-prod"
+      resource_group:
+        required: true
+        description: "AKS resource group"
+        default: "rg-mis"
+      cluster-name:
+        required: true
+        description: 'AKS cluster name'
+        default: 'mis-aks-cluster'
+      
+
+env:
+  AZURE_CONTAINER_REGISTRY: "cybage"
+  CONTAINER_NAME: "mis.services.pjt"
+  RESOURCE_GROUP: "rg-mis"
+  CLUSTER_NAME: "mis-aks-cluster"
+  # DEPLOYMENT_MANIFEST_PATH: 'deployments/**.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # Checks out the repository this file is in
+    - uses: actions/checkout@v3
+    
+    # Logs in with your Azure credentials
+    - name: Azure login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+    # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
+    - name: Get K8s context
+      uses: azure/aks-set-context@v2.0
+      with:
+        resource-group: ${{ env.RESOURCE_GROUP }}
+        cluster-name: ${{ env.CLUSTER_NAME }}
+
+    # Update the kubernetes config files with github action environment variables    
+    - uses: microsoft/variable-substitution@v1
+      with:
+       files: 'k8s/**.yml'
+#        splitChar: '__'
+      env:
+       data.ConnectionStrings__sqlConnection: ${{ secrets.SQL_CS }}
+       data.ConnectionStrings__serviceBusConnection: ${{ secrets.SB_CS}}
+
+    # Deploys application based on given manifest file
+    - name: Deploys application
+      uses: Azure/k8s-deploy@v3.1
+      with:
+        action: deploy
+        namespace: 'ns-mis-aspnet-dev'
+        manifests: |
+          k8s/secret.yml
+          k8s/service.yml
+          k8s/deployment.yml
+        images: |
+          ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:latest
+          
+      

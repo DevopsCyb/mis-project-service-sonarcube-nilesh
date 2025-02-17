@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mis-pjt-svc
+spec:
+  selector:
+    matchLabels:
+      app: project-mvc
+  template:
+    metadata:
+      labels:
+        app: project-mvc
+    spec:
+      containers:
+      - name: project-mvc
+        image: cybage.azurecr.io/mis.services.pjt
+        ports:
+        - containerPort: 80
+        envFrom:
+        - configMapRef:
+            name: mis-pjt-config
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mis-pjt-config
+data:
+  ConnectionStrings__sqlConnection: __CONNECTION_STRING__
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mis-pjt-svc
+spec:
+  selector:
+    app: project-mvc
+  type: ClusterIP
+  ports:
+  - protocol: "TCP"
+    port: 80 
+    targetPort: 80 

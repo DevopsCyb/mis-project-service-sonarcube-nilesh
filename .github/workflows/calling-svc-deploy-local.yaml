@@ -1,0 +1,20 @@
+name: deploy database locally using reusable workflow
+on:
+  repository_dispatch:
+    types: [deploy-to-local]
+  workflow_dispatch:
+    
+        
+jobs:
+  Deploy:
+    uses: cybagedevops/mis-reusable/.github/workflows/deploy_iis.yml@main
+    with:
+      PATH: ${{ github.event.client_payload.PATH }}
+      DB_NAME: Project
+      RUNNER: ${{ github.event.client_payload.RUNNER }}
+      DB_SERVER: ${{ github.event.client_payload.DB_SERVER }}
+      DB_STAGE: ${{ github.event.client_payload.DB_STAGE }}
+      DB_USERNAME: ${{ github.event.client_payload.DB_USERNAME }}
+      DB_PASSWORD: ${{ github.event.client_payload.DB_PASSWORD }}
+      SERVICE_PORT: 8084
+    secrets: inherit

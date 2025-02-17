@@ -1,0 +1,6 @@
+﻿E:\git-repos\cybage-devops\mis-project-service\MIS.Services.Projects.Database\dbo\Tables\Vertical.sql
+E:\git-repos\cybage-devops\mis-project-service\MIS.Services.Projects.Database\dbo\Tables\Roles.sql
+E:\git-repos\cybage-devops\mis-project-service\MIS.Services.Projects.Database\dbo\Tables\Projects.sql
+E:\git-repos\cybage-devops\mis-project-service\MIS.Services.Projects.Database\dbo\Tables\ProjectResources.sql
+C:\Users\shubhamjad\AppData\Local\Temp\.NETFramework,Version=v4.8.SqlClrAttributes.cs
+E:\git-repos\cybage-devops\mis-project-service\MIS.Services.Projects.Database\Scripts\ScriptsIgnoredOnImport.sql

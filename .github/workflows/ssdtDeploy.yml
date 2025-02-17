@@ -1,0 +1,57 @@
+name: SQL for GitHub Actions
+on:
+  workflow_dispatch:
+    inputs:
+      ResourceGroup:
+        description: 'Resource Group ' 
+        required: true
+        default: "rg-mis-aks"
+
+      Server:
+        description: 'Server Name ' 
+        required: true
+        default: "misdb-sql-server"
+        
+      DatabaseName:
+        description: 'Database Name ' 
+        required: true
+        default: "mis-project-service-db"        
+
+      
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+     - name : Git Checkout
+       uses: actions/checkout@v1
+       
+       
+     - name : Azure Login
+       uses: azure/login@v1
+       with:
+         creds: ${{ secrets.AZURE_CREDENTIALS }}
+         
+         
+     - name: Azure CLI Action
+       uses: Azure/cli@v1
+       with:
+         inlineScript: |
+           az account show
+           echo "Creating ${{github.event.inputs.DatabaseName}}"
+           az sql db create \
+             --resource-group ${{github.event.inputs.ResourceGroup}} \
+             --server ${{github.event.inputs.Server}} \
+             --name ${{github.event.inputs.DatabaseName}} \
+             --edition Basic
+           az sql server firewall-rule create \
+             --resource-group ${{github.event.inputs.ResourceGroup}} \
+             --server ${{github.event.inputs.Server}} \
+             -n AllowYourIp \
+             --start-ip-address 103.81.78.0 \
+             --end-ip-address 103.81.78.255
+     - name: SSDT 
+       uses: azure/sql-action@v2
+       with:        
+        connection-string: ${{ secrets.CONNECTION_STRING }}
+        path: 'mis-db/mis-db.sqlproj'
+        action: 'publish'
